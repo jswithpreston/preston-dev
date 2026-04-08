@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  hashedPassword String
+  name           String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Project {
+  id            String   @id @default(uuid())
+  slug          String   @unique
+  title         String
+  summary       String
+  stack         String[] @default([])
+  timeline      String?
+  role          String?
+  featured      Boolean  @default(false)
+  published     Boolean  @default(false)
+  sortOrder     Int      @default(0)
+  problem       String?
+  constraints   String?
+  architecture  String?
+  dataModel     String?
+  keyDecisions  String?
+  failures      String?
+  improvements  String?
+  roadmap       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  knowledgeBlocks AIKnowledgeBlock[]
+
+  @@index([published, sortOrder])
+  @@map("projects")
+}
+
+model Decision {
+  id           String         @id @default(uuid())
+  title        String
+  context      String
+  decision     String
+  consequences String
+  status       DecisionStatus @default(PROPOSED)
+  tags         String[]       @default([])
+  published    Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([published])
+  @@map("decisions")
+}
+
+enum DecisionStatus {
+  PROPOSED
+  ACCEPTED
+  DEPRECATED
+  SUPERSEDED
+}
+
+model Metric {
+  id        String   @id @default(uuid())
+  label     String
+  value     String
+  suffix    String?
+  sortOrder Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([visible, sortOrder])
+  @@map("metrics")
+}
+
+model SystemContent {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  title     String
+  content   String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+  @@map("system_contents")
+}
+
+model AIKnowledgeBlock {
+  id        String             @id @default(uuid())
+  type      KnowledgeBlockType
+  title     String
+  summary   String
+  content   String
+  tags      String[]           @default([])
+  active    Boolean            @default(true)
+  projectId String?
+  project   Project?           @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@index([type, active])
+  @@index([projectId])
+  @@map("ai_knowledge_blocks")
+}
+
+enum KnowledgeBlockType {
+  PROJECT
+  ARCHITECTURE
+  PHILOSOPHY
+  CAREER
+  STACK
+  GENERAL
+}
+
+model ChatSession {
+  id         String        @id @default(uuid())
+  sessionKey String        @unique
+  metadata   Json?
+  messages   ChatMessage[]
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id        String      @id @default(uuid())
+  sessionId String
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      MessageRole
+  content   String
+  createdAt DateTime    @default(now())
+
+  @@index([sessionId, createdAt])
+  @@map("chat_messages")
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+model ContactSubmission {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([read, createdAt])
+  @@map("contact_submissions")
+}
