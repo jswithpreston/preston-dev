@@ -24,6 +24,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+export const dynamic = 'force-dynamic';
+
 const sections = [
   { key: "problem" as const, title: "Problem" },
   { key: "constraints" as const, title: "Constraints" },
