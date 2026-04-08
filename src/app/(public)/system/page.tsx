@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "How this site works — stack, philosophy, infrastructure, and AI architecture.",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function SystemPage() {
   const sections = await prisma.systemContent.findMany({
     orderBy: { sortOrder: "asc" },

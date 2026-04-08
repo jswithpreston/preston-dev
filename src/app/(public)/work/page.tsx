@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "Projects and case studies.",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function WorkPage() {
   const projects = await prisma.project.findMany({
     where: { published: true },
