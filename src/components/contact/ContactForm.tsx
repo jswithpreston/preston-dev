@@ -48,7 +48,7 @@ export function ContactForm() {
         <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
         <p className="font-medium">Message sent</p>
         <p className="text-sm text-muted-foreground">
-          I&apos;ll get back to you when I can.
+          Thanks for reaching out. I'll get back to you within 24-48 hours.
         </p>
         <Button
           variant="ghost"
@@ -63,12 +63,18 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
         <label htmlFor="name" className="text-sm font-medium">
           Name
         </label>
-        <Input id="name" name="name" required placeholder="Your name" />
+        <Input
+          id="name"
+          name="name"
+          required
+          placeholder="Your name"
+          className="h-11"
+        />
       </div>
       <div className="space-y-2">
         <label htmlFor="email" className="text-sm font-medium">
@@ -80,6 +86,7 @@ export function ContactForm() {
           type="email"
           required
           placeholder="you@example.com"
+          className="h-11"
         />
       </div>
       <div className="space-y-2">
@@ -90,13 +97,19 @@ export function ContactForm() {
           id="message"
           name="message"
           required
-          rows={5}
-          placeholder="What's on your mind?"
+          rows={4}
+          placeholder="What problem are you trying to solve?"
           minLength={10}
+          className="resize-none"
         />
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
-      <Button type="submit" disabled={status === "sending"}>
+      <Button
+        type="submit"
+        disabled={status === "sending"}
+        size="lg"
+        className="w-full"
+      >
         {status === "sending" ? (
           "Sending..."
         ) : (

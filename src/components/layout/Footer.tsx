@@ -12,7 +12,7 @@ export function Footer() {
               {siteConfig.name}
             </h3>
             <p className="text-sm text-muted-foreground">
-              Software engineer building thoughtful systems.
+              Building systems that solve real problems. Open to high-impact work.
             </p>
           </div>
 

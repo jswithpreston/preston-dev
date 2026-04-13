@@ -14,19 +14,43 @@ interface DecisionCardProps {
 }
 
 export function DecisionCard({ decision }: DecisionCardProps) {
+  // Show first 150 chars of context for preview
+  const contextPreview =
+    decision.context.length > 150
+      ? decision.context.slice(0, 150) + "..."
+      : decision.context;
+
   return (
-    <div className="rounded-lg border border-border/50 p-6">
+    <div className="rounded-lg border border-border/50 p-6 transition-colors hover:border-border">
       <div className="flex items-start justify-between gap-4">
-        <h3 className="font-serif text-lg font-semibold tracking-tight">
-          {decision.title}
-        </h3>
+        <div className="flex-1">
+          <h3 className="font-serif text-lg font-semibold tracking-tight">
+            {decision.title}
+          </h3>
+          {decision.decision && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">Decision:</span>{" "}
+              {decision.decision.length > 120
+                ? decision.decision.slice(0, 120) + "..."
+                : decision.decision}
+            </p>
+          )}
+        </div>
         <span
           className={`inline-flex shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[decision.status] || ""}`}
         >
           {decision.status}
         </span>
       </div>
-      <p className="mt-3 text-muted-foreground">{decision.context}</p>
+      <p className="mt-3 text-muted-foreground">{contextPreview}</p>
+      {decision.consequences && (
+        <p className="mt-3 text-sm">
+          <span className="font-medium">Impact:</span>{" "}
+          {decision.consequences.length > 120
+            ? decision.consequences.slice(0, 120) + "..."
+            : decision.consequences}
+        </p>
+      )}
       <div className="mt-4 flex flex-wrap items-center gap-2">
         {decision.tags.map((tag) => (
           <Badge key={tag} variant="outline" className="font-mono text-xs">

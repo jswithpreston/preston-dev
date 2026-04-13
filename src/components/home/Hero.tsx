@@ -16,8 +16,7 @@ export function Hero() {
       </div>
 
       <p className="mt-4 max-w-[52ch] text-lg text-muted-foreground animate-[fade-in_0.5s_ease-out_0.1s_both]">
-        Software engineer building thoughtful systems. I care about clean
-        architecture, honest documentation, and shipping things that work.
+        Software engineer focused on systems architecture. Most developers focus on features — I focus on how everything works together under pressure. Clean data structures, predictable behavior, and documentation that tells the truth.
       </p>
 
       <div className="mt-8 flex gap-4 animate-[fade-in_0.5s_ease-out_0.2s_both]">

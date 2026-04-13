@@ -13,16 +13,16 @@ export default function ContactPage() {
     <>
       <PageHeader
         title="Contact"
-        description="Have a question or want to work together? Send me a message."
+        description="Have a project or problem to solve? Send a message. I'll respond within 24–48 hours."
       />
       <div className="grid gap-12 lg:grid-cols-[1fr,1.5fr] pb-12">
         <div className="space-y-8">
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">Get in touch</h2>
             <p className="text-sm text-muted-foreground">
-              I'm always interested in hearing about new projects and
-              opportunities. Whether you have a question or just want to say hi,
-              feel free to reach out.
+              I'm interested in high-impact work and solving real problems.
+              Whether you need a system designed from scratch or an existing one
+              improved, let's talk.
             </p>
           </div>
 

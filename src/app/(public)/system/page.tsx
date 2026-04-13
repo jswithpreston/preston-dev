@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Separator } from "@/components/ui/separator";
-import Markdown from "react-markdown";
+import { SystemSection } from "@/components/system/SystemSection";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -20,18 +20,16 @@ export default async function SystemPage() {
     <>
       <PageHeader
         title="System"
-        description="How this site works. The stack, the philosophy, the infrastructure."
+        description="The architecture behind this portfolio. How I build, why I choose certain tools, and what I've learned about designing systems that hold under pressure."
       />
       <div className="space-y-8 pb-12">
         {sections.map((section, idx) => (
           <div key={section.id}>
             {idx > 0 && <Separator className="mb-8" />}
-            <h2 className="mb-4 font-serif text-xl font-semibold tracking-tight">
-              {section.title}
-            </h2>
-            <div className="prose prose-stone dark:prose-invert max-w-[68ch] prose-headings:font-serif prose-headings:tracking-tight">
-              <Markdown>{section.content}</Markdown>
-            </div>
+            <SystemSection
+              title={section.title}
+              content={section.content}
+            />
           </div>
         ))}
       </div>

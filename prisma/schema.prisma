@@ -30,6 +30,7 @@ model Project {
   published     Boolean  @default(false)
   sortOrder     Int      @default(0)
   problem       String?
+  outcome       String?
   constraints   String?
   architecture  String?
   dataModel     String?

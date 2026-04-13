@@ -22,20 +22,34 @@ export default async function WorkPage() {
       stack: true,
       timeline: true,
       role: true,
+      problem: true,
+      outcome: true,
+      featured: true,
+      sortOrder: true,
     },
+  });
+
+  // Sort: featured projects first, then by sortOrder
+  const sorted = [...projects].sort((a, b) => {
+    if (a.featured !== b.featured) return a.featured ? -1 : 1;
+    return a.sortOrder - b.sortOrder;
   });
 
   return (
     <>
       <PageHeader
         title="Work"
-        description="Projects I've built. Each one taught me something worth documenting."
+        description="Selected systems I've designed and built to solve real-world problems. Each project focuses on structure, scalability, and execution under constraints."
       />
       <div className="space-y-4 pb-12">
-        {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+        {sorted.map((project) => (
+          <ProjectCard
+            key={project.id}
+            project={project}
+            featured={project.featured}
+          />
         ))}
-        {projects.length === 0 && (
+        {sorted.length === 0 && (
           <p className="text-muted-foreground">No projects published yet.</p>
         )}
       </div>
