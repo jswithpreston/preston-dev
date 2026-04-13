@@ -18,6 +18,8 @@ export default async function DecisionsPage() {
       id: true,
       title: true,
       context: true,
+      decision: true,
+      consequences: true,
       status: true,
       tags: true,
       createdAt: true,
@@ -28,7 +30,7 @@ export default async function DecisionsPage() {
     <>
       <PageHeader
         title="Decisions"
-        description="Architecture Decision Records. The context behind technical choices, documented before I forget why."
+        description="Architecture Decision Records. The context, tradeoffs, and reasoning behind technical choices — documented before I forget why."
       />
       <div className="space-y-4 pb-12">
         {decisions.map((decision) => (

@@ -22,6 +22,10 @@ export default async function HomePage() {
         stack: true,
         timeline: true,
         role: true,
+        problem: true,
+        outcome: true,
+        featured: true,
+        sortOrder: true,
       },
     }),
   ]);
