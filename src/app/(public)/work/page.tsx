@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/prisma";
+import { getPayload } from "payload";
+import config from "@/payload.config";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { ProjectCard } from "@/components/work/ProjectCard";
 import type { Metadata } from "next";
@@ -11,28 +12,36 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function WorkPage() {
-  const projects = await prisma.project.findMany({
-    where: { published: true },
-    orderBy: { sortOrder: "asc" },
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      summary: true,
-      stack: true,
-      timeline: true,
-      role: true,
-      problem: true,
-      outcome: true,
-      featured: true,
-      sortOrder: true,
+  const payload = await getPayload({ config });
+
+  const projectsRes = await payload.find({
+    collection: "projects",
+    where: {
+      published: {
+        equals: true,
+      },
     },
+    sort: "sortOrder",
   });
+
+  const projects = projectsRes.docs.map(doc => ({
+    id: doc.id,
+    slug: doc.slug,
+    title: doc.title,
+    summary: doc.summary,
+    stack: doc.stack?.map((s: any) => s.item).filter(Boolean) as string[] || [],
+    timeline: doc.timeline,
+    role: doc.role,
+    problem: doc.problem,
+    outcome: doc.outcome,
+    featured: doc.featured,
+    sortOrder: doc.sortOrder,
+  }));
 
   // Sort: featured projects first, then by sortOrder
   const sorted = [...projects].sort((a, b) => {
-    if (a.featured !== b.featured) return a.featured ? -1 : 1;
-    return a.sortOrder - b.sortOrder;
+    if (a.featured !== b.featured) return (a.featured ? -1 : 1);
+    return (a.sortOrder || 0) - (b.sortOrder || 0);
   });
 
   return (
@@ -45,8 +54,8 @@ export default async function WorkPage() {
         {sorted.map((project) => (
           <ProjectCard
             key={project.id}
-            project={project}
-            featured={project.featured}
+            project={project as any}
+            featured={!!project.featured}
           />
         ))}
         {sorted.length === 0 && (
