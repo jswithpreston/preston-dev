@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/prisma";
+import { getPayload } from "payload";
+import config from "@/payload.config";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { DecisionCard } from "@/components/decisions/DecisionCard";
 import type { Metadata } from "next";
@@ -11,20 +12,28 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function DecisionsPage() {
-  const decisions = await prisma.decision.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      title: true,
-      context: true,
-      decision: true,
-      consequences: true,
-      status: true,
-      tags: true,
-      createdAt: true,
+  const payload = await getPayload({ config });
+
+  const res = await payload.find({
+    collection: "decisions",
+    where: {
+      published: {
+        equals: true,
+      },
     },
+    sort: "-createdAt",
   });
+
+  const decisions = res.docs.map(doc => ({
+    id: doc.id,
+    title: doc.title,
+    context: doc.context,
+    decision: doc.decision,
+    consequences: doc.consequences,
+    status: doc.status as any,
+    tags: doc.tags?.map((t: any) => t.tag).filter(Boolean) as string[] || [],
+    createdAt: doc.createdAt,
+  }));
 
   return (
     <>
@@ -34,7 +43,7 @@ export default async function DecisionsPage() {
       />
       <div className="space-y-4 pb-12">
         {decisions.map((decision) => (
-          <DecisionCard key={decision.id} decision={decision} />
+          <DecisionCard key={decision.id} decision={decision as any} />
         ))}
         {decisions.length === 0 && (
           <p className="text-muted-foreground">No decisions documented yet.</p>

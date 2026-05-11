@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/prisma";
+import { getPayload } from "payload";
+import config from "@/payload.config";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Separator } from "@/components/ui/separator";
 import { SystemSection } from "@/components/system/SystemSection";
@@ -12,9 +13,14 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function SystemPage() {
-  const sections = await prisma.systemContent.findMany({
-    orderBy: { sortOrder: "asc" },
+  const payload = await getPayload({ config });
+
+  const res = await payload.find({
+    collection: "system-contents",
+    sort: "sortOrder",
   });
+
+  const sections = res.docs;
 
   return (
     <>

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { getPayload } from "payload";
+import config from "@/payload.config";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CaseStudySection } from "@/components/work/CaseStudySection";
@@ -11,10 +12,17 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = await prisma.project.findUnique({
-    where: { slug },
-    select: { title: true, summary: true },
+  const payload = await getPayload({ config });
+  const res = await payload.find({
+    collection: "projects",
+    where: {
+      slug: {
+        equals: slug,
+      },
+    },
   });
+
+  const project = res.docs[0];
 
   if (!project) return { title: "Not Found" };
 
@@ -39,9 +47,26 @@ const sections = [
 
 export default async function CaseStudyPage({ params }: PageProps) {
   const { slug } = await params;
-  const project = await prisma.project.findUnique({
-    where: { slug, published: true },
+  const payload = await getPayload({ config });
+  const res = await payload.find({
+    collection: "projects",
+    where: {
+      and: [
+        {
+          slug: {
+            equals: slug,
+          },
+        },
+        {
+          published: {
+            equals: true,
+          },
+        },
+      ],
+    },
   });
+
+  const project = res.docs[0];
 
   if (!project) notFound();
 
@@ -66,9 +91,9 @@ export default async function CaseStudyPage({ params }: PageProps) {
           )}
         </div>
         <div className="flex flex-wrap gap-2">
-          {project.stack.map((tech) => (
-            <Badge key={tech} variant="secondary" className="font-mono text-xs">
-              {tech}
+          {project.stack?.map((tech: any) => (
+            <Badge key={tech.item} variant="secondary" className="font-mono text-xs">
+              {tech.item}
             </Badge>
           ))}
         </div>
@@ -77,7 +102,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
       <Separator className="my-8" />
 
       {sections.map(({ key, title }) => {
-        const content = project[key];
+        const content = project[key] as string | undefined;
         if (!content) return null;
         return <CaseStudySection key={key} title={title} content={content} />;
       })}
